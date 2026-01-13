@@ -36,9 +36,9 @@ if [ "$VERSION" = "latest" ]; then
     echo "Error: jq is required to fetch latest version but is not installed"
     exit 1
   fi
-  VERSION=$(curl -s https://api.github.com/repos/go-gitea/tea/releases/latest | jq -r .tag_name)
+  VERSION=$(curl -s https://gitea.com/api/v1/repos/gitea/tea/releases/latest | jq -r .tag_name)
   if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-    echo "Error: Failed to fetch latest version from GitHub API"
+    echo "Error: Failed to fetch latest version from Gitea API"
     exit 1
   fi
   # Remove 'v' prefix if present
@@ -65,8 +65,8 @@ case "$ARCH" in
     ;;
 esac
 
-# Download URL format: https://dl.gitea.io/tea/v0.9.0/tea-v0.9.0-linux-amd64
-DOWNLOAD_URL="https://dl.gitea.io/tea/v${VERSION}/tea-v${VERSION}-linux-${ARCH}"
+# Download URL format: https://gitea.com/gitea/tea/releases/download/v0.11.1/tea-0.11.1-linux-amd64
+DOWNLOAD_URL="https://gitea.com/gitea/tea/releases/download/v${VERSION}/tea-${VERSION}-linux-${ARCH}"
 INSTALL_DIR="/usr/local/bin"
 INSTALL_PATH="${INSTALL_DIR}/tea"
 
