@@ -1,0 +1,44 @@
+name: 'Install Gitea Tea CLI'
+description: 'Installs and configures the Gitea CLI (tea) tool'
+author: 'LiquidLogicLabs'
+inputs:
+  version:
+    description: 'Version of tea to install (e.g., "latest", "v0.9.0", "0.9.0")'
+    required: false
+    default: 'latest'
+  username:
+    description: 'Gitea username for authentication'
+    required: false
+    default: ''
+  token:
+    description: 'Gitea personal access token. If not provided, will use GITEA_TOKEN or GITHUB_TOKEN environment variables'
+    required: false
+    default: ''
+  repo:
+    description: 'Gitea repository URL (e.g., https://gitea.com or https://gitea.example.com)'
+    required: false
+    default: ''
+outputs:
+  success:
+    description: 'Indicates if the installation was successful'
+  binaryPath:
+    description: 'Path where the tea binary was installed'
+  version:
+    description: 'Version of tea that was installed'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install and configure tea
+      shell: bash
+      run: ${{ github.action_path }}/install-tea.sh
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_USERNAME: ${{ inputs.username }}
+        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_REPO: ${{ inputs.repo }}
+        GITHUB_ACTOR: ${{ github.actor }}
+        GITHUB_SERVER_URL: ${{ github.server_url }}
+        GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+branding:
+  icon: 'terminal'
+  color: 'blue'

@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+lib/
+*.tsbuildinfo
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# AI Tools
+.bmad-core/
+.github/chatmodes/

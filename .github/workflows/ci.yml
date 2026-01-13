@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+    tags-ignore: ['**']  # Ignore tag pushes (handled by release workflow)
+  pull_request:
+    branches: ['**']
+  workflow_call:  # Allow CI to be called by release workflow
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  lint:
+    # No conditions needed - workflow trigger handles filtering
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Lint shell script
+        run: |
+          shellcheck install-tea.sh || {
+            echo "Shellcheck found issues. Please fix them."
+            exit 1
+          }
+
+      - name: Validate action.yml
+        run: |
+          # Basic validation that action.yml exists and is valid YAML
+          if [ ! -f action.yml ]; then
+            echo "action.yml not found"
+            exit 1
+          fi
+          # Check if yq or python is available for YAML validation
+          if command -v python3 &> /dev/null; then
+            python3 -c "import yaml; yaml.safe_load(open('action.yml'))" || {
+              echo "action.yml is not valid YAML"
+              exit 1
+            }
+          fi
+
+      - name: Verify script is executable
+        run: |
+          if [ ! -x install-tea.sh ]; then
+            echo "install-tea.sh is not executable"
+            exit 1
+          fi
+
+  test:
+    # No conditions needed - workflow trigger handles filtering
+    needs: lint  # Tests run after lint
+    uses: ./.github/workflows/test.yml
+    # test.yml runs: unit tests + integration tests (all tests except E2E)
