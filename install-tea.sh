@@ -113,8 +113,10 @@ elif [ -z "$TOKEN" ]; then
 fi
 
 # Set outputs
-echo "success=true" >> "$GITHUB_OUTPUT"
-echo "binaryPath=$INSTALL_PATH" >> "$GITHUB_OUTPUT"
-echo "version=$INSTALLED_VERSION" >> "$GITHUB_OUTPUT"
+{
+  echo "success=true"
+  echo "binaryPath=$INSTALL_PATH"
+  echo "version=$INSTALLED_VERSION"
+} >> "$GITHUB_OUTPUT"
 
 echo "Installation complete!"
