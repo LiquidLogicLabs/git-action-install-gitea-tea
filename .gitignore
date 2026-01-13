@@ -36,3 +36,4 @@ coverage/
 # AI Tools
 .bmad-core/
 .github/chatmodes/
+.cursor/
