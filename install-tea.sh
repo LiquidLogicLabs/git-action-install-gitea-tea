@@ -85,9 +85,16 @@ if ! "$INSTALL_PATH" --version &> /dev/null; then
 fi
 
 # Extract version from tea --version output
-INSTALLED_VERSION=$("$INSTALL_PATH" --version 2>&1 | head -n1 | sed -E 's/.*v?([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?).*/\1/' || echo "")
-if [ -z "$INSTALLED_VERSION" ]; then
-  # Fallback to the version we tried to install
+# Format: "Version: 0.11.1	golang: 1.24.4" (may contain ANSI color codes)
+# Strip ANSI codes and extract version after "Version:"
+VERSION_OUTPUT=$("$INSTALL_PATH" --version 2>&1 | head -n1)
+INSTALLED_VERSION=$(echo "$VERSION_OUTPUT" | sed 's/\x1b\[[0-9;]*m//g' | sed -E 's/.*Version:[[:space:]]*v?([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?).*/\1/' || echo "")
+if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" = "$VERSION_OUTPUT" ]; then
+  # Fallback: try to extract first version number (for different output formats)
+  INSTALLED_VERSION=$(echo "$VERSION_OUTPUT" | sed 's/\x1b\[[0-9;]*m//g' | sed -E 's/.*v?([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?).*/\1/' || echo "")
+fi
+if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" = "$VERSION_OUTPUT" ]; then
+  # Final fallback to the version we tried to install
   INSTALLED_VERSION="$VERSION"
 fi
 
