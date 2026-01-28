@@ -44,12 +44,15 @@ jobs:
             echo "action.yml not found"
             exit 1
           fi
-          # Check if yq or python is available for YAML validation
-          if command -v python3 &> /dev/null; then
+          # Validate YAML when PyYAML is available (e.g. GitHub runner); skip in act when not present
+          if python3 -c "import yaml" 2>/dev/null; then
             python3 -c "import yaml; yaml.safe_load(open('action.yml'))" || {
               echo "action.yml is not valid YAML"
               exit 1
             }
+            echo "action.yml is valid YAML"
+          else
+            echo "Skipping YAML parse check (PyYAML not installed); action.yml exists"
           fi
 
       - name: Verify script is executable

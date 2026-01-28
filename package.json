@@ -1,0 +1,13 @@
+{
+  "name": "install-gitea-tea-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action for installing Gitea tea CLI",
+  "scripts": {
+    "test:act": "act workflow_dispatch -W .github/workflows/test.yml --eventpath .github/workflows/.act/event-workflow_call.json",
+    "test:act:verbose": "act workflow_dispatch -W .github/workflows/test.yml --eventpath .github/workflows/.act/event-workflow_call.json -v",
+    "test:act:ci": "act -W .github/workflows/ci.yml",
+    "test:act:release": "act push --eventpath .github/workflows/.act/event-release.json -W .github/workflows/release.yml",
+    "lint:act": "act -W .github/workflows/ci.yml -j lint"
+  }
+}
