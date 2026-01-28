@@ -37,3 +37,8 @@ coverage/
 .bmad-core/
 .github/chatmodes/
 .cursor/
+# Local dev (act)
+.env.*
+.secrets
+.secrets.*
+.actrc.local
