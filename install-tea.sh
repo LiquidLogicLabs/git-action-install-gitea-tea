@@ -6,6 +6,16 @@ VERSION="${INPUT_VERSION:-latest}"
 USERNAME="${INPUT_USERNAME:-}"
 TOKEN="${INPUT_TOKEN:-}"
 REPO="${INPUT_REPO:-}"
+VERBOSE="${INPUT_VERBOSE:-false}"
+
+# Enable verbose mode if requested
+if [ "$VERBOSE" = "true" ]; then
+  set -x
+  echo "[DEBUG] Verbose logging enabled"
+  echo "[DEBUG] version=${VERSION}"
+  echo "[DEBUG] username=${USERNAME:-<unset>}"
+  echo "[DEBUG] repo=${REPO:-<unset>}"
+fi
 
 # Set defaults from GitHub context if not provided
 if [ -z "$USERNAME" ]; then

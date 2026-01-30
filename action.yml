@@ -18,17 +18,25 @@ inputs:
     description: 'Gitea repository URL (e.g., https://gitea.com or https://gitea.example.com)'
     required: false
     default: ''
+  verbose:
+    description: 'Enable verbose debug logging. Also enabled when ACTIONS_STEP_DEBUG=true.'
+    required: false
+    default: 'false'
 outputs:
   success:
     description: 'Indicates if the installation was successful'
+    value: ${{ steps.install-tea.outputs.success }}
   binaryPath:
     description: 'Path where the tea binary was installed'
+    value: ${{ steps.install-tea.outputs.binaryPath }}
   version:
     description: 'Version of tea that was installed'
+    value: ${{ steps.install-tea.outputs.version }}
 runs:
   using: 'composite'
   steps:
     - name: Install and configure tea
+      id: install-tea
       shell: bash
       run: ${{ github.action_path }}/install-tea.sh
       env:
@@ -36,6 +44,7 @@ runs:
         INPUT_USERNAME: ${{ inputs.username }}
         INPUT_TOKEN: ${{ inputs.token }}
         INPUT_REPO: ${{ inputs.repo }}
+        INPUT_VERBOSE: ${{ inputs.verbose == 'true' || env.ACTIONS_STEP_DEBUG == 'true' }}
         GITHUB_ACTOR: ${{ github.actor }}
         GITHUB_SERVER_URL: ${{ github.server_url }}
         GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
