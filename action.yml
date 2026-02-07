@@ -18,6 +18,10 @@ inputs:
     description: 'Gitea repository URL (e.g., https://gitea.com or https://gitea.example.com)'
     required: false
     default: ''
+  skipCertificateCheck:
+    description: 'Skip TLS certificate verification when downloading tea or calling APIs'
+    required: false
+    default: 'false'
   verbose:
     description: 'Enable verbose debug logging. Also enabled when ACTIONS_STEP_DEBUG=true.'
     required: false
@@ -44,6 +48,7 @@ runs:
         INPUT_USERNAME: ${{ inputs.username }}
         INPUT_TOKEN: ${{ inputs.token }}
         INPUT_REPO: ${{ inputs.repo }}
+        INPUT_SKIP_CERTIFICATE_CHECK: ${{ inputs.skipCertificateCheck }}
         INPUT_VERBOSE: ${{ inputs.verbose == 'true' || env.ACTIONS_STEP_DEBUG == 'true' }}
         GITHUB_ACTOR: ${{ github.actor }}
         GITHUB_SERVER_URL: ${{ github.server_url }}

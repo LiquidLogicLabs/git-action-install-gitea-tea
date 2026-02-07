@@ -7,6 +7,7 @@ USERNAME="${INPUT_USERNAME:-}"
 TOKEN="${INPUT_TOKEN:-}"
 REPO="${INPUT_REPO:-}"
 VERBOSE="${INPUT_VERBOSE:-false}"
+SKIP_CERT_CHECK="${INPUT_SKIP_CERTIFICATE_CHECK:-false}"
 
 # Enable verbose mode if requested
 if [ "$VERBOSE" = "true" ]; then
@@ -15,6 +16,11 @@ if [ "$VERBOSE" = "true" ]; then
   echo "[DEBUG] version=${VERSION}"
   echo "[DEBUG] username=${USERNAME:-<unset>}"
   echo "[DEBUG] repo=${REPO:-<unset>}"
+  echo "[DEBUG] skipCertificateCheck=${SKIP_CERT_CHECK}"
+fi
+
+if [ "$SKIP_CERT_CHECK" = "true" ]; then
+  echo "[WARN] TLS certificate verification is disabled. This is a security risk and should only be used with trusted endpoints."
 fi
 
 # Set defaults from GitHub context if not provided
@@ -46,7 +52,11 @@ if [ "$VERSION" = "latest" ]; then
     echo "Error: jq is required to fetch latest version but is not installed"
     exit 1
   fi
-  VERSION=$(curl -s https://gitea.com/api/v1/repos/gitea/tea/releases/latest | jq -r .tag_name)
+  CURL_FLAGS=(-s)
+  if [ "$SKIP_CERT_CHECK" = "true" ]; then
+    CURL_FLAGS+=(-k)
+  fi
+  VERSION=$(curl "${CURL_FLAGS[@]}" https://gitea.com/api/v1/repos/gitea/tea/releases/latest | jq -r .tag_name)
   if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
     echo "Error: Failed to fetch latest version from Gitea API"
     exit 1
@@ -81,7 +91,11 @@ INSTALL_DIR="/usr/local/bin"
 INSTALL_PATH="${INSTALL_DIR}/tea"
 
 echo "Downloading tea from: $DOWNLOAD_URL"
-curl -L -f "$DOWNLOAD_URL" -o "$INSTALL_PATH" || {
+CURL_DOWNLOAD_FLAGS=(-L -f)
+if [ "$SKIP_CERT_CHECK" = "true" ]; then
+  CURL_DOWNLOAD_FLAGS+=(-k)
+fi
+curl "${CURL_DOWNLOAD_FLAGS[@]}" "$DOWNLOAD_URL" -o "$INSTALL_PATH" || {
   echo "Failed to download tea binary"
   exit 1
 }
