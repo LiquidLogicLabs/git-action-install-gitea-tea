@@ -18,7 +18,7 @@ inputs:
     description: 'Gitea repository URL (e.g., https://gitea.com or https://gitea.example.com)'
     required: false
     default: ''
-  skipCertificateCheck:
+  skip-certificate-check:
     description: 'Skip TLS certificate verification when downloading tea or calling APIs'
     required: false
     default: 'false'
@@ -30,9 +30,9 @@ outputs:
   success:
     description: 'Indicates if the installation was successful'
     value: ${{ steps.install-tea.outputs.success }}
-  binaryPath:
+  binary-path:
     description: 'Path where the tea binary was installed'
-    value: ${{ steps.install-tea.outputs.binaryPath }}
+    value: ${{ steps.install-tea.outputs.binary-path }}
   version:
     description: 'Version of tea that was installed'
     value: ${{ steps.install-tea.outputs.version }}
@@ -48,7 +48,7 @@ runs:
         INPUT_USERNAME: ${{ inputs.username }}
         INPUT_TOKEN: ${{ inputs.token }}
         INPUT_REPO: ${{ inputs.repo }}
-        INPUT_SKIP_CERTIFICATE_CHECK: ${{ inputs.skipCertificateCheck }}
+        INPUT_SKIP_CERTIFICATE_CHECK: ${{ inputs.skip-certificate-check }}
         INPUT_VERBOSE: ${{ inputs.verbose == 'true' || env.ACTIONS_STEP_DEBUG == 'true' }}
         GITHUB_ACTOR: ${{ github.actor }}
         GITHUB_SERVER_URL: ${{ github.server_url }}

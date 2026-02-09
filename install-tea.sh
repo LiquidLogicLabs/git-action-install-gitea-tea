@@ -16,7 +16,7 @@ if [ "$VERBOSE" = "true" ]; then
   echo "[DEBUG] version=${VERSION}"
   echo "[DEBUG] username=${USERNAME:-<unset>}"
   echo "[DEBUG] repo=${REPO:-<unset>}"
-  echo "[DEBUG] skipCertificateCheck=${SKIP_CERT_CHECK}"
+  echo "[DEBUG] skip-certificate-check=${SKIP_CERT_CHECK}"
 fi
 
 if [ "$SKIP_CERT_CHECK" = "true" ]; then
@@ -146,7 +146,7 @@ fi
 # Set outputs
 {
   echo "success=true"
-  echo "binaryPath=$INSTALL_PATH"
+  echo "binary-path=$INSTALL_PATH"
   echo "version=$INSTALLED_VERSION"
 } >> "$GITHUB_OUTPUT"
 

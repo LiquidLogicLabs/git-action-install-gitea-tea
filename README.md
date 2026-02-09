@@ -81,7 +81,7 @@ jobs:
 
       - name: Use tea CLI
         run: |
-          echo "tea is installed at: ${{ steps.install-tea.outputs.binaryPath }}"
+          echo "tea is installed at: ${{ steps.install-tea.outputs.binary-path }}"
           echo "tea version: ${{ steps.install-tea.outputs.version }}"
           tea --version
           tea login list
@@ -101,7 +101,7 @@ jobs:
 | Output | Description |
 |--------|-------------|
 | `success` | Indicates if the installation was successful (`true` or `false`) |
-| `binaryPath` | Path where the tea binary was installed (typically `/usr/local/bin/tea`) |
+| `binary-path` | Path where the tea binary was installed (typically `/usr/local/bin/tea`) |
 | `version` | Version of tea that was installed |
 
 ## Token Resolution
@@ -188,7 +188,7 @@ The action intelligently uses GitHub context for defaults:
 
 - name: Display info
   run: |
-    echo "Binary: ${{ steps.tea.outputs.binaryPath }}"
+    echo "Binary: ${{ steps.tea.outputs.binary-path }}"
     echo "Version: ${{ steps.tea.outputs.version }}"
 ```
 
@@ -211,7 +211,7 @@ The action intelligently uses GitHub context for defaults:
 
 - The binary is installed to `/usr/local/bin/tea`
 - Ensure `/usr/local/bin` is in your PATH (it should be by default)
-- Check outputs: `${{ steps.install-tea.outputs.binaryPath }}`
+- Check outputs: `${{ steps.install-tea.outputs.binary-path }}`
 
 ## License
 

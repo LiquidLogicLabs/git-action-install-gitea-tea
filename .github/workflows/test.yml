@@ -27,7 +27,7 @@ jobs:
             echo "Default test failed, but this is expected if no token is provided"
           else
             echo "✓ Default test passed"
-            echo "Binary path: ${{ steps.test-default.outputs.binaryPath }}"
+            echo "Binary path: ${{ steps.test-default.outputs.binary-path }}"
             echo "Version: ${{ steps.test-default.outputs.version }}"
           fi
 
