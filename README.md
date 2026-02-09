@@ -104,6 +104,10 @@ jobs:
 | `binary-path` | Path where the tea binary was installed (typically `/usr/local/bin/tea`) |
 | `version` | Version of tea that was installed |
 
+## Permissions
+
+No special permissions are required. The action downloads the tea binary; typical workflows need `contents: read` for checkout.
+
 ## Token Resolution
 
 The action uses the following priority order to resolve the authentication token:
