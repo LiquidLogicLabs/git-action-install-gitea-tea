@@ -9,14 +9,11 @@
     "test:act:ci": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets -W .github/workflows/ci.yml",
     "test:act:release": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets push --eventpath .github/workflows/.act/event-release.json -W .github/workflows/release.yml",
     "lint:act": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets -W .github/workflows/ci.yml -j lint",
-    "version:dry-run": "standard-version --dry-run",
-    "version:patch": "standard-version --release-as patch",
-    "version:minor": "standard-version --release-as minor",
-    "version:major": "standard-version --release-as major",
-    "release:push": "git push --follow-tags origin HEAD",
-    "release:patch": "standard-version --release-as patch --skip.changelog && npm run release:push",
-    "release:minor": "standard-version --release-as minor --skip.changelog && npm run release:push",
-    "release:major": "standard-version --release-as major --skip.changelog && npm run release:push",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "postversion": "git push --follow-tags origin HEAD",
+    "release:patch": "npm version patch -m \"chore(release): %s\"",
+    "release:minor": "npm version minor -m \"chore(release): %s\"",
+    "release:major": "npm version major -m \"chore(release): %s\"",
     "test:act:ci:push": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets -W .github/workflows/ci.yml --eventpath .github/workflows/.act/event-push.json",
     "test:act:ci:dispatch": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets -W .github/workflows/ci.yml --eventpath .github/workflows/.act/event-workflow_dispatch.json",
     "test:act:ci:with-secrets": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets -W .github/workflows/ci.yml",
@@ -24,9 +21,6 @@
     "test:act:release:dispatch": "act --env-file .act.env --var-file .act.vars --secret-file .act.secrets -W .github/workflows/release.yml --eventpath .github/workflows/.act/event-workflow_dispatch.json"
   },
   "devDependencies": {
-    "standard-version": "^9.5.0"
-  },
-  "standard-version": {
-    "tagPrefix": "v"
+    "conventional-changelog-cli": "^5.0.0"
   }
 }
