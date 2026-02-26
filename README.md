@@ -95,6 +95,8 @@ jobs:
 | `username` | Gitea username for authentication | No | `${{ github.actor }}` |
 | `token` | Gitea personal access token. If not provided, will use `GITEA_TOKEN` or `GITHUB_TOKEN` environment variables | No | (checks env vars) |
 | `repo` | Gitea repository URL (e.g., `https://gitea.com` or `https://gitea.example.com`) | No | `${{ github.server_url }}/${{ github.repository_owner }}` |
+| `skip-certificate-check` | Skip TLS certificate verification when downloading tea or calling APIs | No | `false` |
+| `verbose` | Enable verbose debug logging. Also enabled when ACTIONS_STEP_DEBUG=true | No | `false` |
 
 ## Outputs
 
