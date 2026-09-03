@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install shellcheck
         run: |
@@ -67,6 +69,19 @@ jobs:
             echo "install-tea.sh is not executable"
             exit 1
           fi
+
+      - name: Lint workflows
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color .github/workflows/ci.yml
+
+      - name: Scan for secrets
+        run: |
+          # Fail loudly if the mount is not a git repo — gitleaks exits 0 in that case.
+          docker run --rm -v "$PWD:/repo" --entrypoint /bin/sh zricethezav/gitleaks:v8.30.1 \
+            -c 'test -e /repo/.git' || { echo "::error::gitleaks mount is not a git repo"; exit 1; }
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.30.1 \
+            detect --source=/repo --no-banner --redact
 
   test:
     # No conditions needed - workflow trigger handles filtering
