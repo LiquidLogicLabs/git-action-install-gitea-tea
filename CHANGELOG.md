@@ -1,3 +1,12 @@
+## [2.0.4](https://github.com/LiquidLogicLabs/git-action-install-gitea-tea/compare/v2.0.3...v2.0.4) (2026-09-04)
+
+
+### Bug Fixes
+
+* validate the version input before it becomes a download URL path ([4bc62ff](https://github.com/LiquidLogicLabs/git-action-install-gitea-tea/commit/4bc62ffbdb14c6e445665f30313415b5e78198bb))
+
+
+
 ## [2.0.3](https://github.com/LiquidLogicLabs/git-action-install-gitea-tea/compare/v2.0.2...v2.0.3) (2026-07-05)
 
 
