@@ -68,6 +68,23 @@ fi
 # Remove 'v' prefix if present in version
 VERSION="${VERSION#v}"
 
+# The version becomes a path segment in the download URL below, and the result is fetched
+# with -L, written to $INSTALL_PATH and chmod +x'd with no checksum. Unvalidated, a value
+# like "../../../other/repo/releases/download/v1/payload" retargets the download at any
+# path on gitea.com. It cannot reach another host through the path, but fetching an
+# arbitrary gitea.com asset and marking it executable is enough. A release version is a
+# version string, not a passthrough, so require that shape.
+case "$VERSION" in
+  ''|*[!0-9A-Za-z.+-]*|[!0-9]*)
+    # The leading-digit requirement is load-bearing, not cosmetic: a character-class check
+    # alone accepts "." and "..", which are made entirely of permitted characters and are
+    # then removed by URL dot-segment normalisation, retargeting the download. A release
+    # version always starts with a digit once the optional "v" prefix is stripped above.
+    echo "::error::version must look like a release version (digits, letters, dot, plus, hyphen, starting with a digit): got '$VERSION'" >&2
+    exit 1
+    ;;
+esac
+
 echo "Installing tea version: $VERSION"
 
 # Detect architecture

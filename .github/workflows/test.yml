@@ -93,6 +93,24 @@ jobs:
             exit 1
           fi
 
+      # Runs the script directly rather than through `uses: ./`, because a composite step
+      # exiting non-zero fails the job and here a non-zero exit is the PASS. On a disposable
+      # runner only -- this script installs a binary into /usr/local/bin.
+      - name: Test - rejects a version that retargets the download URL
+        run: |
+          for bad in '../../../other/repo/releases/download/v1/payload' 'x;id' '..' 'a b'; do
+            set +e
+            out=$(INPUT_VERSION="$bad" INPUT_VERBOSE=false bash ./install-tea.sh 2>&1); rc=$?
+            set -e
+            if [ "$rc" -eq 0 ]; then
+              echo "::error::version '$bad' was accepted"; exit 1
+            fi
+            echo "$out" | grep -q 'must look like a release version' \
+              || { echo "::error::version '$bad' rejected, but not by the version guard"; echo "$out"; exit 1; }
+            echo "  ✓ refused: $bad"
+          done
+          echo "✓ all retargeting versions refused"
+
       - name: Test Summary
         run: |
           echo "## ✅ Test Summary" >> $GITHUB_STEP_SUMMARY
