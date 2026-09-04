@@ -29,8 +29,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          # No step in this job pushes; the credential is not needed.
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Install shellcheck
@@ -93,7 +95,33 @@ jobs:
       - name: Lint workflows
         uses: docker://rhysd/actionlint:1.7.12
         with:
-          args: -color .github/workflows/ci.yml
+          # No path: actionlint discovers every workflow itself. Passing a directory makes
+          # it fail with "is a directory" and exit 0, having linted nothing -- and passing
+          # one file, as this did, left release.yml and test.yml unchecked, which is where
+          # nearly all the shell actually lives.
+          args: -color
+
+      - name: Audit workflows for injection and supply-chain issues
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/zizmorcore/zizmor:1.30.0 \
+            --no-progress --persona=regular /repo
+
+      - name: Reject a suppressed template-injection finding
+        run: |
+          # template-injection is the remote-code-execution class this gate exists for. It
+          # may never be suppressed -- neither inline nor through a config file that a
+          # reviewer scanning workflow diffs would not see.
+          if grep -rn 'zizmor: ignore\[template-injection\]' .github action.yml 2>/dev/null; then
+            echo "::error::template-injection may not be suppressed; fix it or report blocked"
+            exit 1
+          fi
+          for cfg in .github/zizmor.yml .github/zizmor.yaml zizmor.yml .zizmor.yml; do
+            if [ -e "$cfg" ]; then
+              echo "::error::$cfg would let findings be silenced outside the workflow diff"
+              exit 1
+            fi
+          done
+          echo "No suppressed template-injection findings and no zizmor config."
 
       - name: Scan for secrets
         run: |
@@ -106,6 +134,12 @@ jobs:
   test:
     # No conditions needed - workflow trigger handles filtering
     needs: lint  # Tests run after lint
-    uses: ./.github/workflows/test.yml
-    secrets: inherit
+    # `$/` is GitHub syntax from July 2026 and act 0.2.89 rejects it outright ("must start
+    # with './' if it's a local workflow"), which would break every `npm run test:act:*`
+    # script here. The marker must sit ON the uses: line -- a comment above a JOB-level
+    # uses: is not honoured, unlike the step-level case.
+    uses: ./.github/workflows/test.yml  # zizmor: ignore[self-repository]
+    # No `secrets:` block: test.yml reads no secret other than the automatic GITHUB_TOKEN,
+    # which is always available and cannot be passed explicitly. `secrets: inherit` handed
+    # it every repository secret for nothing.
     # test.yml runs: unit tests + integration tests (all tests except E2E)

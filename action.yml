@@ -42,8 +42,14 @@ runs:
     - name: Install and configure tea
       id: install-tea
       shell: bash
-      run: ${{ github.action_path }}/install-tea.sh
+      # github.action_path goes through env: rather than being expanded into the run:
+      # block. Expanded inline it is substituted as literal text before bash parses the
+      # line, so any shell metacharacter (a space in the checkout path is enough) changes
+      # what runs. zizmor flags this one only under --persona=auditor, but the rule is the
+      # same: an expression never reaches a run: block directly.
+      run: "$Z_ACTION_PATH/install-tea.sh"
       env:
+        Z_ACTION_PATH: ${{ github.action_path }}
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_USERNAME: ${{ inputs.username }}
         INPUT_TOKEN: ${{ inputs.token }}

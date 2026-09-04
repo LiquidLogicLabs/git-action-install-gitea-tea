@@ -18,54 +18,66 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          # No step in this job pushes; the credential is not needed.
+          persist-credentials: false
 
       # Test the action directly with default values
       - name: Test - Default values
         id: test-default
-        uses: ./
+        uses: ./  # zizmor: ignore[self-repository] — local ACTION reference under test, not a reusable-workflow call; $/ does not apply
         continue-on-error: true
 
       - name: Verify default test results
+        env:
+          Z_TEST_DEFAULT_OUTCOME: ${{ steps.test-default.outcome }}
+          Z_TEST_DEFAULT_OUTPUTS_BINARY_PATH: ${{ steps.test-default.outputs.binary-path }}
+          Z_TEST_DEFAULT_OUTPUTS_VERSION: ${{ steps.test-default.outputs.version }}
         run: |
-          if [ "${{ steps.test-default.outcome }}" != "success" ]; then
+          if [ "${Z_TEST_DEFAULT_OUTCOME}" != "success" ]; then
             echo "Default test failed, but this is expected if no token is provided"
           else
             echo "✓ Default test passed"
-            echo "Binary path: ${{ steps.test-default.outputs.binary-path }}"
-            echo "Version: ${{ steps.test-default.outputs.version }}"
+            echo "Binary path: ${Z_TEST_DEFAULT_OUTPUTS_BINARY_PATH}"
+            echo "Version: ${Z_TEST_DEFAULT_OUTPUTS_VERSION}"
           fi
 
       # Test with explicit version
       - name: Test - Explicit version
         id: test-version
-        uses: ./
+        uses: ./  # zizmor: ignore[self-repository] — local ACTION reference under test, not a reusable-workflow call; $/ does not apply
         with:
           version: '0.9.0'
         continue-on-error: true
 
       - name: Verify version test results
+        env:
+          Z_TEST_VERSION_OUTCOME: ${{ steps.test-version.outcome }}
+          Z_TEST_VERSION_OUTPUTS_VERSION: ${{ steps.test-version.outputs.version }}
         run: |
-          if [ "${{ steps.test-version.outcome }}" != "success" ]; then
+          if [ "${Z_TEST_VERSION_OUTCOME}" != "success" ]; then
             echo "Version test failed"
             exit 1
           fi
           echo "✓ Version test passed"
-          if [ -n "${{ steps.test-version.outputs.version }}" ]; then
-            echo "Installed version: ${{ steps.test-version.outputs.version }}"
+          if [ -n "${Z_TEST_VERSION_OUTPUTS_VERSION}" ]; then
+            echo "Installed version: ${Z_TEST_VERSION_OUTPUTS_VERSION}"
           fi
 
       # Test with custom repo URL
       - name: Test - Custom repo URL
         id: test-repo
-        uses: ./
+        uses: ./  # zizmor: ignore[self-repository] — local ACTION reference under test, not a reusable-workflow call; $/ does not apply
         with:
           repo: 'https://gitea.com'
         continue-on-error: true
 
       - name: Verify repo test results
+        env:
+          Z_TEST_REPO_OUTCOME: ${{ steps.test-repo.outcome }}
         run: |
-          if [ "${{ steps.test-repo.outcome }}" != "success" ]; then
+          if [ "${Z_TEST_REPO_OUTCOME}" != "success" ]; then
             echo "Repo test failed, but this is expected if no token is provided"
           else
             echo "✓ Repo test passed"
@@ -113,9 +125,11 @@ jobs:
 
       - name: Test Summary
         run: |
-          echo "## ✅ Test Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "All tests completed successfully!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Binary location: \`/usr/local/bin/tea\`" >> $GITHUB_STEP_SUMMARY
-          echo "- Binary is in PATH: ✅" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## ✅ Test Summary"
+            echo ""
+            echo "All tests completed successfully!"
+            echo ""
+            echo "- Binary location: \`/usr/local/bin/tea\`"
+            echo "- Binary is in PATH: ✅"
+          } >> "$GITHUB_STEP_SUMMARY"
