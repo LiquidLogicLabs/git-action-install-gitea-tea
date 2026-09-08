@@ -1,4 +1,4 @@
-# Install Gitea Tea CLI
+# Git Install Gitea Tea CLI
 
 [![CI](https://github.com/LiquidLogicLabs/git-action-install-gitea-tea/workflows/CI/badge.svg)](https://github.com/LiquidLogicLabs/git-action-install-gitea-tea/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -24,14 +24,14 @@ This action downloads and installs the `tea` (Gitea CLI) binary, making it avail
 
 ```yaml
 - name: Install tea CLI
-  uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+  uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
 ```
 
 ### With Custom Version
 
 ```yaml
 - name: Install tea CLI
-  uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+  uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
   with:
     version: '0.9.0'
 ```
@@ -40,7 +40,7 @@ This action downloads and installs the `tea` (Gitea CLI) binary, making it avail
 
 ```yaml
 - name: Install and configure tea CLI
-  uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+  uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
   with:
     token: ${{ secrets.GITEA_TOKEN }}
     repo: 'https://gitea.example.com'
@@ -50,7 +50,7 @@ This action downloads and installs the `tea` (Gitea CLI) binary, making it avail
 
 ```yaml
 - name: Install tea CLI
-  uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+  uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
   env:
     GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
 ```
@@ -73,7 +73,7 @@ jobs:
 
       - name: Install tea CLI
         id: install-tea
-        uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+        uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
         with:
           version: 'latest'
           token: ${{ secrets.GITEA_TOKEN }}
@@ -165,13 +165,13 @@ The action intelligently uses GitHub context for defaults:
 ### Install Latest Version
 
 ```yaml
-- uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+- uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
 ```
 
 ### Install Specific Version
 
 ```yaml
-- uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+- uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
   with:
     version: '0.9.0'
 ```
@@ -179,7 +179,7 @@ The action intelligently uses GitHub context for defaults:
 ### Install with Custom Gitea Instance
 
 ```yaml
-- uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+- uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
   with:
     repo: 'https://gitea.example.com'
     token: ${{ secrets.GITEA_TOKEN }}
@@ -190,7 +190,7 @@ The action intelligently uses GitHub context for defaults:
 ```yaml
 - name: Install tea
   id: tea
-  uses: LiquidLogicLabs/git-action-install-gitea-tea@v1
+  uses: LiquidLogicLabs/git-action-install-gitea-tea@v2
 
 - name: Display info
   run: |
