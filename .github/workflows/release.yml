@@ -113,7 +113,7 @@ jobs:
           # `${{` for either rewriter to see and JSON.parse restores the literal.
           configurationJson: |
             {
-              "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Pull Requests</summary>\n\n#{{PR_LIST}}\n</details>\n\n---\n\n### Usage\n\n```yaml\n- uses: LiquidLogicLabs/git-action-install-gitea-tea@${{ github.ref_name }}\n  with:\n    version: 'latest'\n    token: \u0024{{ secrets.GITEA_TOKEN }}\n    repo: 'https://gitea.example.com'\n```"
+              "template": "#{{CHANGELOG}}\n\n---\n\n### Usage\n\n```yaml\n- uses: LiquidLogicLabs/git-action-install-gitea-tea@${{ github.ref_name }}\n  with:\n    version: 'latest'\n    token: \u0024{{ secrets.GITEA_TOKEN }}\n    repo: 'https://gitea.example.com'\n```"
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
