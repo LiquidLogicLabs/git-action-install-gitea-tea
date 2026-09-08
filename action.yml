@@ -1,4 +1,4 @@
-name: 'Install Gitea Tea CLI'
+name: 'Git Install Gitea Tea CLI'
 description: 'Installs and configures the Gitea CLI (tea) tool'
 author: 'LiquidLogicLabs'
 inputs:
