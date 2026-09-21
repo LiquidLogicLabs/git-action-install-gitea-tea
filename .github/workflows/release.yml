@@ -32,10 +32,17 @@ jobs:
     # No `secrets:` block: test.yml reads no secret other than the automatic GITHUB_TOKEN,
     # which is always available and cannot be passed explicitly.
 
+  e2e-tests:
+    needs: test
+    # Runs the action as a consumer does (uses: ./). This repo previously had no
+    # E2E at all, so a release was gated only on unit-level checks while the other
+    # actions gated on E2E too.
+    uses: ./.github/workflows/e2e-tests.yml  # zizmor: ignore[self-repository]
+
   release:
     permissions:
       contents: write   # creates the release and moves the floating tags
-    needs: test  # REQUIRED: Tests must pass before release
+    needs: [test, e2e-tests]  # REQUIRED: unit tests and E2E must pass before release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

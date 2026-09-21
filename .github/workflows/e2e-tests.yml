@@ -1,0 +1,90 @@
+# E2E: run the action the way a consumer does (uses: ./) and assert its real effects.
+# This action had no E2E at all, so nothing verified that it actually installs a
+# working binary or that its outputs describe what it installed.
+name: E2E tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Distinct 'e2e-' prefix: release.yml calls this workflow and groups on
+  # ${{ github.workflow }}-<ref>, which resolves to the SAME value here when called.
+  # CLAUDE.md records a shared group between caller and callee as a deadlock.
+  group: e2e-${{ github.workflow || 'E2E Tests' }}-${{ github.ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: E2E (action as used)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          # No step in this job pushes; the credential is not needed.
+          persist-credentials: false
+
+      - name: Install tea (latest)
+        id: install
+        uses: ./  # zizmor: ignore[self-repository] — local ACTION reference under test, not a reusable-workflow call; $/ does not apply
+        with:
+          version: 'latest'
+          verbose: 'true'
+
+      - name: Outputs are populated
+        env:
+          Z_SUCCESS: ${{ steps.install.outputs.success }}
+          Z_PATH: ${{ steps.install.outputs.binary-path }}
+          Z_VERSION: ${{ steps.install.outputs.version }}
+        run: |
+          set -euo pipefail
+          [ "${Z_SUCCESS}" = "true" ] || { echo "::error::success output was '${Z_SUCCESS}', expected true"; exit 1; }
+          [ -n "${Z_PATH}" ]    || { echo "::error::binary-path output is empty"; exit 1; }
+          [ -n "${Z_VERSION}" ] || { echo "::error::version output is empty"; exit 1; }
+          echo "success=${Z_SUCCESS} path=${Z_PATH} version=${Z_VERSION}"
+
+      - name: The installed binary exists, is executable, and runs
+        env:
+          Z_PATH: ${{ steps.install.outputs.binary-path }}
+        run: |
+          set -euo pipefail
+          [ -x "${Z_PATH}" ] || { echo "::error::${Z_PATH} is not executable"; exit 1; }
+          "${Z_PATH}" --version
+
+      - name: tea is on PATH
+        run: |
+          set -euo pipefail
+          command -v tea >/dev/null || { echo "::error::tea is not on PATH after the action ran"; exit 1; }
+          tea --version
+
+      - name: The reported version matches the binary
+        env:
+          Z_VERSION: ${{ steps.install.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Compare on the bare version number; `tea --version` wraps it in prose.
+          actual="$(tea --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+          reported="$(printf '%s' "${Z_VERSION}" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+          [ -n "$actual" ] || { echo "::error::could not parse a version from 'tea --version'"; exit 1; }
+          if [ "$actual" != "$reported" ]; then
+            echo "::error::version output '${reported}' does not match the installed binary '${actual}'"
+            exit 1
+          fi
+          echo "version output matches the installed binary: $actual"
+
+      - name: A pinned version installs that exact version
+        id: pinned
+        uses: ./  # zizmor: ignore[self-repository] — local ACTION reference under test, not a reusable-workflow call; $/ does not apply
+        with:
+          version: '0.9.2'
+          verbose: 'true'
+
+      - name: Pinned install really is 0.9.2
+        run: |
+          set -euo pipefail
+          actual="$(tea --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+          [ "$actual" = "0.9.2" ] || { echo "::error::asked for 0.9.2, got '$actual'"; exit 1; }
+          echo "pinned install verified: $actual"
