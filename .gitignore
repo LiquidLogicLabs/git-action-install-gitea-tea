@@ -37,7 +37,6 @@ coverage/
 .nyc_output/
 
 # AI Tools
-.bmad-core/
 .github/chatmodes/
 .cursor/
 # Local dev (act)
@@ -45,3 +44,4 @@ coverage/
 .secrets
 .secrets.*
 .actrc.local
+_bmad-output/
