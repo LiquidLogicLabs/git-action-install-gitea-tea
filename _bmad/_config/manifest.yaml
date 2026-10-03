@@ -1,27 +1,27 @@
 installation:
   version: 6.12.0
   installDate: 2026-09-21T16:00:40.440Z
-  lastUpdated: 2026-10-02T16:48:11.022Z
+  lastUpdated: 2026-10-03T13:24:38.944Z
   installShims: false
 modules:
   - name: core
     version: 6.12.0
     installDate: 2026-09-21T16:00:39.052Z
-    lastUpdated: 2026-10-02T16:48:10.941Z
+    lastUpdated: 2026-10-03T13:24:38.913Z
     source: built-in
     npmPackage: null
     repoUrl: null
   - name: bmm
     version: 6.12.0
     installDate: 2026-09-21T16:00:39.345Z
-    lastUpdated: 2026-10-02T16:48:10.951Z
+    lastUpdated: 2026-10-03T13:24:38.916Z
     source: built-in
     npmPackage: null
     repoUrl: null
   - name: l3io-pm
     version: main
     installDate: 2026-09-21T16:00:39.532Z
-    lastUpdated: 2026-10-02T16:48:10.964Z
+    lastUpdated: 2026-10-03T13:24:38.923Z
     source: custom
     npmPackage: null
     repoUrl: https://github.com/ravensorb/bmad-extensions
@@ -29,7 +29,7 @@ modules:
   - name: l3io-arch
     version: main
     installDate: 2026-09-21T16:00:39.602Z
-    lastUpdated: 2026-10-02T16:48:10.977Z
+    lastUpdated: 2026-10-03T13:24:38.931Z
     source: custom
     npmPackage: null
     repoUrl: https://github.com/ravensorb/bmad-extensions
@@ -37,7 +37,7 @@ modules:
   - name: l3io-sec
     version: main
     installDate: 2026-09-21T16:00:39.672Z
-    lastUpdated: 2026-10-02T16:48:10.989Z
+    lastUpdated: 2026-10-03T13:24:38.939Z
     source: custom
     npmPackage: null
     repoUrl: https://github.com/ravensorb/bmad-extensions
@@ -45,7 +45,7 @@ modules:
   - name: l3io-util
     version: main
     installDate: 2026-09-21T16:00:39.835Z
-    lastUpdated: 2026-10-02T16:48:11.022Z
+    lastUpdated: 2026-10-03T13:24:38.944Z
     source: custom
     npmPackage: null
     repoUrl: https://github.com/ravensorb/bmad-extensions
